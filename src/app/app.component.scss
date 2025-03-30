@@ -12,16 +12,19 @@
 }
 .title {
   font-size: 2rem;
-  margin-bottom: 20px;
+  margin: 10px 10px 20px;
   z-index: 2;
   text-align: center;
 }
 .timer {
-  display: flex;
+  // display: flex;
+  // flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 2fr 2fr;
   gap: 20px;
   z-index: 2;
-  flex-wrap: wrap;
   justify-content: center;
+  margin: 10px;
 }
 .time-box {
   text-align: center;
