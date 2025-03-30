@@ -10,6 +10,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   unsubscribe$ = new Subject();
   targetDate = new Date('2025-04-27T06:35:59');
   randomPhotosAmount: number = 10;
+  pixelPhotoSize: number = 150;
   days = 0;
   hours = 0;
   minutes = 0;
@@ -89,8 +90,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       let top, left, overlap, attempts = 0;
       const maxAttempts = 50;
       do {
-        top = Math.random() * (container.clientHeight - 150);
-        left = Math.random() * (container.clientWidth - 150);
+        top = Math.random() * (container.clientHeight - this.pixelPhotoSize);
+        left = Math.random() * (container.clientWidth - this.pixelPhotoSize);
         overlap = this.checkOverlap(photoGrid, top, left, timerRect);
         attempts++;
       } while (overlap && attempts < maxAttempts);
@@ -110,18 +111,15 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     const photos = Array.from(photoGrid.children) as HTMLElement[];
     for (let photo of photos) {
       const rect = photo.getBoundingClientRect();
-      const overlapX = Math.max(0, Math.min(rect.right, left + 250) - Math.max(rect.left, left));
-      const overlapY = Math.max(0, Math.min(rect.bottom, top + 250) - Math.max(rect.top, top));
-      if ((overlapX * overlapY) / (250 * 250) > 0.1) {
+      const overlapX = Math.max(0, Math.min(rect.right, left + this.pixelPhotoSize) - Math.max(rect.left, left));
+      const overlapY = Math.max(0, Math.min(rect.bottom, top + this.pixelPhotoSize) - Math.max(rect.top, top));
+      if ((overlapX * overlapY) / (this.pixelPhotoSize * this.pixelPhotoSize) > 0.1) {
         return true;
       }
     }
-    return (
-      left < timerRect.right &&
-      left + 250 > timerRect.left &&
-      top < timerRect.bottom &&
-      top + 250 > timerRect.top
-    );
+    const overlapArea = Math.max(0, Math.min(timerRect.right, left + this.pixelPhotoSize) - Math.max(timerRect.left, left)) * 
+                        Math.max(0, Math.min(timerRect.bottom, top + this.pixelPhotoSize) - Math.max(timerRect.top, top));
+    return (overlapArea / (this.pixelPhotoSize * this.pixelPhotoSize)) > 0.3;
   }
 
   ngOnDestroy(): void {
